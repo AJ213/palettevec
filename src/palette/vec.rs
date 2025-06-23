@@ -1,5 +1,5 @@
 use crate::Palette;
-use std::{hash::Hash, iter::FilterMap};
+use std::{cmp::Ordering, hash::Hash, iter::FilterMap};
 
 use rustc_hash::FxHashMap;
 
@@ -15,13 +15,24 @@ use crate::{
 /// Not optimal for very large palette sizes, but very fast for small ones.
 ///
 /// Also very memory efficient and no danger of stack overflow.
-#[derive(Clone)]
+#[derive(Clone, Debug, Eq, PartialEq, Default, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "bitcode", derive(bitcode::Encode, bitcode::Decode))]
 pub struct VecPalette<T: Eq + Hash + Clone> {
     index_size: usize,
     real_entries: usize,
     storage: Vec<Option<PaletteEntry<T>>>,
+}
+
+impl<T: PartialOrd + Eq + Hash + Clone> PartialOrd for VecPalette<T> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        self.storage.partial_cmp(&other.storage)
+    }
+}
+impl<T: Ord + Eq + Hash + Clone> Ord for VecPalette<T> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        self.storage.cmp(&other.storage)
+    }
 }
 
 impl<T: Eq + Hash + Clone> Palette<T> for VecPalette<T> {

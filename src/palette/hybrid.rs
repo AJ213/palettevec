@@ -22,7 +22,7 @@ use super::{compare_palette_entries_option_max_first, Palette, PaletteEntry};
 /// (up to `INLINE_PALETTE_THRESHOLD`) and switches to heap-allocated `FxHashMap`s
 /// if this threshold is exceeded. This provides a balance between performance
 /// for small palettes and scalability for larger ones.
-#[derive(Clone)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "bitcode", derive(bitcode::Encode, bitcode::Decode))]
 pub struct HybridPalette<const INLINE_PALETTE_THRESHOLD: usize, T: Eq + Hash + Clone> {
@@ -31,7 +31,7 @@ pub struct HybridPalette<const INLINE_PALETTE_THRESHOLD: usize, T: Eq + Hash + C
     storage: HybridStorage<INLINE_PALETTE_THRESHOLD, T>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, Eq, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "bitcode", derive(bitcode::Encode, bitcode::Decode))]
 enum HybridStorage<const INLINE_PALETTE_THRESHOLD: usize, T: Eq + Hash + Clone> {

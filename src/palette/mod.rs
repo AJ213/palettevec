@@ -44,12 +44,33 @@ pub type CountType = u16;
 ))]
 pub type CountType = u32;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Default, Hash)]
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[cfg_attr(feature = "bitcode", derive(bitcode::Encode, bitcode::Decode))]
 pub struct PaletteEntry<T: Eq + Clone> {
     pub value: T,
     pub count: CountType,
+}
+
+impl<T: PartialOrd + Eq + Clone> PartialOrd for PaletteEntry<T> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        match self.value.partial_cmp(&other.value) {
+            Some(Ordering::Equal) => {
+                self.count.partial_cmp(&other.count)
+            },
+            ordering => ordering,
+        }
+    }
+}
+impl<T: Ord + Eq + Clone> Ord for PaletteEntry<T> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match self.value.cmp(&other.value) {
+            Ordering::Equal => {
+                self.count.cmp(&other.count)
+            },
+            ordering => ordering,
+        }
+    }
 }
 
 /// Some with max count will be first, None will be last
