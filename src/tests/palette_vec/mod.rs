@@ -136,7 +136,7 @@ where
     }
     for i in 0..iteration_count {
         let value = (i + 1) % amount_unique_values;
-        pv.set(i as usize, (value as u32));
+        pv.set(i as usize, &(value as u32));
     }
     for i in (0..iteration_count).rev() {
         let value = (i + 1) % amount_unique_values;
@@ -150,7 +150,7 @@ where
         pv.push(value as u32);
     }
     for i in 0..iteration_count {
-        pv.set(i as usize, 0);
+        pv.set(i as usize, &0);
     }
     for _ in 0..iteration_count {
         assert_eq!(pv.pop(), Some(0));
@@ -166,7 +166,7 @@ where
     }
     for i in 0..iteration_count {
         let value = i % amount_unique_values;
-        pv.set(i as usize, (value as u32));
+        pv.set(i as usize, &(value as u32));
         assert_eq!(pv.get(i), Some(&(value as u32)));
     }
     for i in (0..iteration_count).rev() {
@@ -213,7 +213,7 @@ where
     assert_eq!(pv.get(iteration_count), None);
     for i in 0..iteration_count {
         let value = i % 11;
-        pv.set(i as usize, (value as u32));
+        pv.set(i as usize, &(value as u32));
         assert_eq!(pv.get(i), Some(&(value as u32)));
     }
 }
@@ -233,14 +233,14 @@ where
     pv.optimize();
     assert_eq!(pv.unique_values(), 1);
     assert_eq!(pv.len(), iteration_count);
-    pv.set(0, 6);
+    pv.set(0, &6);
     assert_eq!(pv.unique_values(), 2);
     assert_eq!(pv.len(), iteration_count);
     pv.optimize();
     assert_eq!(pv.unique_values(), 2);
     assert_eq!(pv.len(), iteration_count);
     for i in 0..iteration_count {
-        pv.set(i as usize, (i as u32 % 77));
+        pv.set(i as usize, &(i as u32 % 77));
     }
     assert_eq!(pv.unique_values(), 77);
     assert_eq!(pv.len(), iteration_count);
@@ -252,7 +252,7 @@ where
     }
     for i in 0..iteration_count {
         if (i % 77) % 3 == 0 {
-            pv.set(i as usize, 0);
+            pv.set(i as usize, &0);
         }
     }
     assert_eq!(pv.unique_values(), 52);
@@ -269,7 +269,7 @@ where
     }
     for i in 0..iteration_count {
         if (i % 77) % 2 == 0 {
-            pv.set(i as usize, 0);
+            pv.set(i as usize, &0);
         }
     }
     assert_eq!(pv.unique_values(), 26);
@@ -329,7 +329,7 @@ where
         if rng.random_bool(0.5) && pv.len() > 0 {
             let index = rng.random_range(0..pv.len());
             let n = rng.random_range(0..max_elem);
-            pv.set(index, n);
+            pv.set(index, &n);
             control[index] = n;
         }
         if rng.random_bool(0.5) && pv.len() > 0 {

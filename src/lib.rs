@@ -165,10 +165,10 @@ impl<T: Eq + Hash + Clone, P: Palette<T>, B: IndexBuffer> PaletteVec<T, P, B> {
         Some(value)
     }
 
-    pub fn set(&mut self, offset: usize, value: T) {
+    pub fn set(&mut self, offset: usize, value: &T) {
         let old_index_size = self.palette.index_size();
         // Check if the value is already in the palette
-        if let Some((entry, index)) = self.palette.get_mut_by_value(&value) {
+        if let Some((entry, index)) = self.palette.get_mut_by_value(value) {
             if old_index_size == 0 {
                 // Reaching this means we have an index size of 0 and set was called
                 // with an element equal to the only element that exists in the palette vec.
@@ -189,7 +189,7 @@ impl<T: Eq + Hash + Clone, P: Palette<T>, B: IndexBuffer> PaletteVec<T, P, B> {
 
         // Value is new, insert into palette
         let (new_index, new_index_size) = self.palette.insert_new(PaletteEntry {
-            value,
+            value: value.clone(),
             count: 1,
         });
         if let Some(new_index_size) = new_index_size {
